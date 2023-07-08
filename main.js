@@ -24,7 +24,7 @@
                  arr4[i]=[reponseData[i].state]
                  
             }
-             
+               
                 console.log(arr2[22])
 
             Highcharts.chart('container', {
@@ -101,7 +101,7 @@
         }]
 });
 let firstChart = Highcharts.charts[0];
-let btn = document.getElementById('data_change');
+let btn = document.getElementById('randomize');
 
 function changedata(){
     let rand1=Math.floor(Math.random() * 56)
@@ -148,7 +148,7 @@ firstChart.series[2].update({
                           type: 'pie'
                       },
                       title: {
-                          text: `COVID Data of the state of  ${actualTerm}`,
+                          text: `COVID Data of the state of  ${actualTerm.toUpperCase()}`,
                           align: 'left'
                       },
                       tooltip: {
@@ -248,7 +248,7 @@ headerFormat: '<b>{point.key}</b><br>',
 pointFormat: 'Popluation: {point.y}'
 },
 title: {
-text: `Total Popluation of  ${searchterm2} the last five decades`,
+text: `Total Popluation of  ${searchterm2.toUpperCase()} the last five decades`,
 align: 'left'
 },
 subtitle: {
@@ -351,10 +351,10 @@ Highcharts.chart('container3', {
         type: 'area'
     },
     accessibility: {
-        description: `Image description: An area chart that compares the Agricultural Employment of ${actualTerm1} and ${actualTerm2} between 2011 and 2021.`
+        description: `Image description: An area chart that compares the Agricultural Employment of ${actualTerm1.toUpperCase()} and ${actualTerm2.toUpperCase()} between 2011 and 2021.`
     },
     title: {
-        text: `${actualTerm1} and ${actualTerm2} Agricultural Employment`,
+        text: `${actualTerm1.toUpperCase()} and ${actualTerm2.toUpperCase()} Agricultural Employment Rate`,
         align:'left'
     },
     subtitle: {
