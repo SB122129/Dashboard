@@ -24,7 +24,7 @@
                  arr4[i]=[reponseData[i].state]
                  
             }
-               // let selectedDate = new Date(arr[0]).toISOString().split('T')[0];
+             
                 console.log(arr2[22])
 
             Highcharts.chart('container', {
@@ -279,7 +279,6 @@ colorByPoint: true
         }
          eco();
         let swithbtn = document.getElementById('switchbtn')
-        //let option = document.getElementById('op').value
         
         
         function changedata2(){
