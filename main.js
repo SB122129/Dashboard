@@ -355,7 +355,7 @@ Highcharts.chart('container3', {
         description: `Image description: An area chart that compares the Agricultural Employment of ${actualTerm1} and ${actualTerm2} between 2011 and 2021.`
     },
     title: {
-        text: `${actualTerm1} and ${actualTerm2} Agricultural Employment Rate`,
+        text: `${actualTerm1} and ${actualTerm2} Agricultural Employment`,
         align:'left'
     },
     subtitle: {
