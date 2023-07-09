@@ -24,7 +24,7 @@ a{
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#"><i class="bi bi-bar-chart-steps"></i>&ensp;Stats Dasboard</a>
+          <a class="navbar-brand" href="#" style="font-size: 2rem;"><i class="bi bi-bar-chart-steps"></i>&ensp;Stats Dasboard</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -40,6 +40,9 @@ a{
               <li class="nav-item">
                 <a class="nav-link active" href="#container4">Population</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#container5">Temprature</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -47,6 +50,7 @@ a{
     
     <figure class="highcharts-figure mt-5">
         <div class="container-fluid" id="container"></div>
+        <div id="loading"></div>
     </figure>
     <center><button class="btn btn-warning mb-5" id="randomize">Randomize States</button></center>
     <figure class="highcharts-figure mt-2">
@@ -101,11 +105,16 @@ a{
   </form>
 </div>
 </div>
+<figure class="highcharts-figure mt-3">
+  <div class="container-fluid" id="container5"></div>
+</figure>
+
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script> 
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="http://code.highcharts.com/maps/modules/map.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
   integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
   </script>

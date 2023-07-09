@@ -1,13 +1,22 @@
-
- async function getcharts ()  {
     
+ async function getcharts ()  {
+    let loading=document.getElementById('loading')
+    loading.innerHTML=`<div class="d-flex justify-content-center">
+    <div class="spinner-grow" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>`
+    
+                
             const response = await fetch(`https://api.covidtracking.com/v1/states/current.json`);
             if(!response.ok) {
                 console.log('Error retrieving data');
                 return;
             }
             const reponseData = await response.json();
+            loading.innerHTML=``
             console.log(reponseData)
+            
 
             let arr=[]
             let arr2=[]
@@ -130,6 +139,7 @@ firstChart.series[2].update({
         
         let actualTerm='ca'
         async function generatePieChart(){
+          
               const response2 = await fetch(` https://api.covidtracking.com/v1/states/${actualTerm}/current.json`);
                   if(!response2.ok) {
                       console.log('Error retrieving data');
@@ -236,7 +246,7 @@ options3d: {
 }
 },
 xAxis: {
-categories: ['2020', '2010', '2000', '1990']
+categories: ['2020', '2010', '2000', '1990','1980','1973']
 },
 yAxis: {
 title: {
@@ -248,7 +258,7 @@ headerFormat: '<b>{point.key}</b><br>',
 pointFormat: 'Popluation: {point.y}'
 },
 title: {
-text: `Total Popluation of  ${searchterm2.toUpperCase()} the last five decades`,
+text: `Total Popluation of  ${searchterm2.toUpperCase()} the last six decades`,
 align: 'left'
 },
 subtitle: {
@@ -269,10 +279,12 @@ colors: [
     'blue',
     ' #228B22',
     'yellow',
-    'indigo'
+    'indigo',
+    'cyan',
+    'brown'
     ],
 series: [{
-data: [arr2[2][0].value,arr2[12][0].value, arr2[22][0].value, arr2[32][0].value],
+data: [arr2[2][0].value,arr2[12][0].value, arr2[22][0].value, arr2[32][0].value, arr2[42][0].value, arr2[49][0].value],
 colorByPoint: true
 }]
 });
@@ -421,8 +433,153 @@ Highcharts.chart('container3', {
             agriChart() ;
         }
 
+        (async () => {
 
+            const topology = await fetch(
+                'http://code.highcharts.com/mapdata/countries/et/et-all.topo.json'
+            ).then(response => response.json());
+            
+            console.log(topology)
+            // Data structure: [country_code, latitude, longitude, capital_city]
+            const newData = [
+                ['et-2837', 9.005401, 38.763611, 'Addis Ababa'],
+                ['et-ti', 14.1667, 38.8333, 'Tigray'],
+                ['et-am', 11.663240, 37.821903, 'Amhara'],
+                ['et-be', 11.0000 , 35.5000, 'Benshangul Gumuz'],
+                ['et-ha', 	9.31387, 42.11815, 'Harar'],
+                ['et-aa', 8.514477, 39.269257, 'Oromia'],
+                ['et-sn', 6.058619, 36.7273, 'Southern Nations and Nationalities'],
+                ['et-af', 11.75593880, 40.95868800, 'Afar'],
+                ['et-so',  7.4387, 44.2969, 'Somalia'],
+                ['et-dd', 9.6008747, 41.850142000000005, 'Dire Dawa'],
+                ['et-ga', 8.25, 34.58333, 'Gambella'],
+                
+            ];
+            // Get temperature for specific localization, and add it to the chart. It
+            // takes point as first argument, countries series as second and capitals
+            // series as third. Capitals series have to be the 'mappoint' series type,
+            // and it should be defined before in the series array.
+            async function getTemp(point, regionCodes, regions) {
+            
+                const json = await fetch(
+                    'https://api.met.no/weatherapi/locationforecast/2.0/?' +
+                        `lat=${point[1]}&lon=${point[2]}`
+                ).then(response => response.json());
+                console.log(json)
+            
+                const temp = json.properties.timeseries[0].data.instant.details.air_temperature,
+                    value = parseInt(temp, 10);
+                
+            
+                const regionCode = {
+                    'hc-key': point[0],
+                    value
+                };
+                const region = {
+                    name: point[3],
+                    lat: point[1],
+                    lon: point[2],
+                    colorKey: 'y',
+                    y: Number.isInteger(value) ? value : null,
+                    custom: {
+                        label: Number.isInteger(value) ?
+                            `${value}℃` :
+                            '<span style="font-weight: normal; opacity: 0.5">N/A</span>'
+                    },
+                };
+            
+                regionCodes.addPoint(regionCode);
+                regions.addPoint(region);
+            }
+            
+            // Create the chart
+            Highcharts.mapChart('container5', {
+                chart: {
+                    map: topology,
+                    events: {
+                        load: function () {
+                            const regionCodes = this.series[0],
+                                regions = this.series[1];
+                            newData.forEach(elem => getTemp(elem, regionCodes, regions));
+                        }
+                    }
+                },
+            
+                title: {
+                    text: 'Current temperatures in Regions of Ethiopia',
+                    align: 'left'
+                },
+            
+                subtitle: {
+                    text: 'Data source: <a href="https://api.met.no/">https://api.met.no/</a>',
+                    align: 'left'
+                },
+            
+                mapNavigation: {
+                    enabled: true,
+                    buttonOptions: {
+                        verticalAlign: 'bottom'
+                    }
+                },
+            
+                colorAxis: {
+                    min: -25,
+                    max: 40,
+                    labels: {
+                        format: '{value}°C'
+                    },
+                    stops: [
+                        [0, '#0000ff'],
+                        [0.3, '#6da5ff'],
+                        [0.6, '#ffff00'],
+                        [1, '#ff0000']
+                    ]
+                },
+            
+                legend: {
+                    title: {
+                        text: 'Degrees Celsius'
+                    }
+                },
+            
+                tooltip: {
+                    headerFormat: '<span style="color:{point.color}">\u25CF</span> {point.key}:<br/>',
+                    pointFormat: 'Temperature: <b>{point.custom.label}</b>'
+                },
+            
+                series: [{
+                    allAreas: true,
+                    name: 'Temperatures',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    enableMouseTracking: false,
+                    accessibility: {
+                        point: {
+                            valueDescriptionFormat: '{xDescription}, {point.value}°C.'
+                        }
+                    }
+                }, {
+                    name: 'Tempratures',
+                    type: 'mappoint',
+                    showInLegend: false,
+                    marker: {
+                        lineWidth: 2,
+                        lineColor: '#000'
+                    },
+                    dataLabels: {
+                        crop: true,
+                        format: '<span>{key}</span><br><span>{point.custom.label}</span>'
+                    },
+                    accessibility: {
+                        point: {
+                            valueDescriptionFormat: '{xDescription}, {point.temp}°C.'
+                        }
+                    }
+                }]
+            });
+            
+            })();
 
 }
 getcharts()
-        
