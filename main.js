@@ -440,42 +440,49 @@ Highcharts.chart('container3', {
             ).then(response => response.json());
             
             console.log(topology)
-            // Data structure: [country_code, latitude, longitude, capital_city]
+            // Data structure: [region_code, latitude, longitude, city]
             const newData = [
                 ['et-2837', 9.005401, 38.763611, 'Addis Ababa'],
-                ['et-ti', 14.1667, 38.8333, 'Tigray'],
-                ['et-am', 11.663240, 37.821903, 'Amhara'],
-                ['et-be', 11.0000 , 35.5000, 'Benshangul Gumuz'],
+                ['et-ti', 13.492668, 39.479163, 'Mekelle'],
+                ['et-ti', 14.12109, 38.72337, 'Aksum'],
+                ['et-am', 12.600000, 37.466667, 'Gondar'],
+                ['et-am', 11.6, 37.38333299999999, 'Bahir Dar'],
+                ['et-am',  9.6833, 39.5333, 'Debre Berhan'],
+                ['et-am',  10.35, 37.73333, 'Debre Markos'],
+                ['et-be', 	10.061983, 34.547301, 'Asosa'],
                 ['et-ha', 	9.31387, 42.11815, 'Harar'],
-                ['et-aa', 8.514477, 39.269257, 'Oromia'],
-                ['et-sn', 6.058619, 36.7273, 'Southern Nations and Nationalities'],
-                ['et-af', 11.75593880, 40.95868800, 'Afar'],
-                ['et-so',  7.4387, 44.2969, 'Somalia'],
+                ['et-aa',  7.666664, 36.83333, 'Jimma'],
+                ['et-aa',   8.514477, 39.269257, 'Adama'],
+                ['et-sn', 7.06205, 38.47635, 'Hawassa'],
+                ['et-sn', 6.03333, 37.55, 'Arba Minch'],
+                ['et-so', 9.3499986, 42.7999968, 'Jigiga'],
+                ['et-so', 8.2166658, 43.5666644, 'Degehabur'],
+                ['et-so', 6.7333304, 44.2666656, 'Kebri Dahar'],
+                ['et-af',  11.788663512, 41.005166646, 'Semera'],
                 ['et-dd', 9.6008747, 41.850142000000005, 'Dire Dawa'],
-                ['et-ga', 8.25, 34.58333, 'Gambella'],
+                ['et-ga', 8.5333312, 34.7999968, 'Dembidollo']
                 
             ];
             // Get temperature for specific localization, and add it to the chart. It
-            // takes point as first argument, countries series as second and capitals
-            // series as third. Capitals series have to be the 'mappoint' series type,
+            // takes point as first argument, regions series as second and citys
+            // series as third. Cities series have to be the 'mappoint' series type,
             // and it should be defined before in the series array.
-            async function getTemp(point, regionCodes, regions) {
-            
+            async function getTemp(point, regionCodes, cities) {
                 const json = await fetch(
-                    'https://api.met.no/weatherapi/locationforecast/2.0/?' +
-                        `lat=${point[1]}&lon=${point[2]}`
+                    `https://api.openweathermap.org/data/2.5/weather?lat=${point[1]}&lon=${point[2]}&APPID=8c0f84c9b29134db9870a3128a83baa5`
                 ).then(response => response.json());
                 console.log(json)
             
-                const temp = json.properties.timeseries[0].data.instant.details.air_temperature,
-                    value = parseInt(temp, 10);
+                const temp = json.main.temp
+                    let valueinKelvin = parseInt(temp, 10);
+                    value=valueinKelvin-273;
                 
             
                 const regionCode = {
                     'hc-key': point[0],
                     value
                 };
-                const region = {
+                const city = {
                     name: point[3],
                     lat: point[1],
                     lon: point[2],
@@ -489,7 +496,7 @@ Highcharts.chart('container3', {
                 };
             
                 regionCodes.addPoint(regionCode);
-                regions.addPoint(region);
+                cities.addPoint(city);
             }
             
             // Create the chart
@@ -499,19 +506,26 @@ Highcharts.chart('container3', {
                     events: {
                         load: function () {
                             const regionCodes = this.series[0],
-                                regions = this.series[1];
-                            newData.forEach(elem => getTemp(elem, regionCodes, regions));
+                                cities = this.series[1];
+                            newData.forEach(elem => getTemp(elem, regionCodes, cities));
+                            this.mapZoom(1, 1000,-7500);
                         }
+                    },
+                    height:600,
+                    style: {
+                    fontSize:'12',
+                    color: "#f00"
                     }
+
                 },
             
                 title: {
-                    text: 'Current temperatures in Regions of Ethiopia',
+                    text: 'Current temperatures of Major cities in Ethiopia',
                     align: 'left'
                 },
             
                 subtitle: {
-                    text: 'Data source: <a href="https://api.met.no/">https://api.met.no/</a>',
+                    text: 'Data source: <a href="https://openweathermap.org/api">https://openweathermap.org/api</a>',
                     align: 'left'
                 },
             
@@ -535,7 +549,13 @@ Highcharts.chart('container3', {
                         [1, '#ff0000']
                     ]
                 },
-            
+                exporting: {
+                    buttons: {
+                        contextButton: {
+                            menuItems: ["viewFullscreen", "printChart", "downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG"],
+                        }
+                    }
+                },
                 legend: {
                     title: {
                         text: 'Degrees Celsius'
@@ -546,10 +566,9 @@ Highcharts.chart('container3', {
                     headerFormat: '<span style="color:{point.color}">\u25CF</span> {point.key}:<br/>',
                     pointFormat: 'Temperature: <b>{point.custom.label}</b>'
                 },
-            
                 series: [{
                     allAreas: true,
-                    name: 'Temperatures',
+                    name: 'Temperatures in Celsius',
                     dataLabels: {
                         enabled: false
                     },
@@ -560,7 +579,7 @@ Highcharts.chart('container3', {
                         }
                     }
                 }, {
-                    name: 'Tempratures',
+                    name: 'Cities',
                     type: 'mappoint',
                     showInLegend: false,
                     marker: {
@@ -578,7 +597,6 @@ Highcharts.chart('container3', {
                     }
                 }]
             });
-            
             })();
 
 }
