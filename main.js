@@ -137,7 +137,7 @@ firstChart.series[2].update({
         btn.addEventListener('click', changedata)
         
         
-        let actualTerm='ca'
+        let actualTerm='sc'
         async function generatePieChart(){
           
               const response2 = await fetch(` https://api.covidtracking.com/v1/states/${actualTerm}/current.json`);
@@ -211,7 +211,7 @@ let searchbtn=document.getElementById('searchbtn');
         
         searchbtn.addEventListener('click',changePieChart)
 function changePieChart(){
-    let searchterm=document.querySelector('#searchTerm').value;
+    let searchterm=document.querySelector('#searchTerm').value.toLowerCase();
     actualTerm=searchterm
 generatePieChart() ;
 }
@@ -258,7 +258,7 @@ headerFormat: '<b>{point.key}</b><br>',
 pointFormat: 'Popluation: {point.y}'
 },
 title: {
-text: `Total Popluation of  ${searchterm2.toUpperCase()} the last six decades`,
+text: `Total popluation of  ${searchterm2.toUpperCase()} the last six decades`,
 align: 'left'
 },
 subtitle: {
@@ -408,12 +408,12 @@ Highcharts.chart('container3', {
         'red'
         ],
     series: [{
-        name: `${actualTerm1}`,
+        name: `${actualTerm1.toUpperCase()}`,
         data: [arr2[11][0].value,arr2[10][0].value, arr2[9][0].value, arr2[8][0].value,
         arr2[7][0].value,arr2[6][0].value,arr2[5][0].value,arr2[4][0].value,arr2[3][0].value,
         arr2[2][0].value,arr2[1][0].value]
     }, {
-        name: `${actualTerm2}`,
+        name: `${actualTerm2.toUpperCase()}`,
         data: [arr3[11][0].value,arr3[10][0].value, arr3[9][0].value, arr3[8][0].value,
         arr3[7][0].value,arr3[6][0].value,arr3[5][0].value,arr3[4][0].value,arr3[3][0].value,
         arr3[2][0].value,arr3[1][0].value
@@ -426,8 +426,8 @@ Highcharts.chart('container3', {
           let comparebtn=document.querySelector('#compareBtn');
           comparebtn.addEventListener('click',changeAreaChart)
           function changeAreaChart(){
-            let compareTerm=document.querySelector('#compareTerm').value;
-            let compareTerm2=document.querySelector('#compareTerm2').value;
+            let compareTerm=document.querySelector('#compareTerm').value.toLowerCase();;
+            let compareTerm2=document.querySelector('#compareTerm2').value.toLowerCase();;
             actualTerm1=compareTerm
             actualTerm2=compareTerm2
             agriChart() ;
