@@ -1,7 +1,6 @@
     
  async function getcharts ()  {
-    let loading=document.getElementById('loading');
-    
+    let loading=document.getElementById('loading')    
                 
             const response = await fetch(`https://api.covidtracking.com/v1/states/current.json`);
             if(!response.ok) {
@@ -142,6 +141,7 @@ firstChart.series[2].update({
                   }
                   const reponseData2 = await response2.json();
                   console.log(reponseData2)
+                  loading.innerHTML=``
                   
                   let arrs=reponseData2
                   Highcharts.chart('container2',{
