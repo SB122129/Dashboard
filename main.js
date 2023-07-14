@@ -1,11 +1,6 @@
     
  async function getcharts ()  {
-    let loading=document.getElementById('loading')
-    loading.innerHTML=`<div class="d-flex justify-content-center">
-    <div class="spinner-grow" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>`
+    let loading=document.getElementById('loading');
     
                 
             const response = await fetch(`https://api.covidtracking.com/v1/states/current.json`);
